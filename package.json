@@ -1,0 +1,27 @@
+{
+  "name": "reydix-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "api-gateway",
+    "events-service",
+    "fans-service"
+  ],
+  "scripts": {
+    "start:dev": "pnpm --parallel --stream --filter='./*' start:dev",
+    "db:seed": "pnpm --parallel --stream --filter='./*' db:seed",
+    "db:seed:events": "pnpm --filter events-service db:seed",
+    "db:seed:fans": "pnpm --filter fans-service db:seed",
+    "migrate:events": "pnpm --filter events-service typeorm:run-migrations",
+    "migrate:fans": "pnpm --filter fans-service typeorm:run-migrations",
+    "migrate:generate:events": "pnpm --filter events-service typeorm:generate-migration",
+    "migrate:generate:fans": "pnpm --filter fans-service typeorm:generate-migration",
+    "db:drop:events": "pnpm --filter events-service typeorm:drop",
+    "db:drop:fans": "pnpm --filter fans-service typeorm:drop",
+    "lint": "pnpm --parallel --stream --filter='./*' lint",
+    "format": "pnpm --parallel --stream --filter='./*' format"
+  },
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+}

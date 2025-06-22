@@ -1,0 +1,132 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  events-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: events_db
+      POSTGRES_USER: events_user
+      POSTGRES_PASSWORD: Admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - events_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U events_user -d events_db -h localhost"] # Added -h localhost for robustness
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  fans-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: fans_db
+      POSTGRES_USER: fans_user
+      POSTGRES_PASSWORD: Admin123
+    ports:
+      - "5433:5432"
+    volumes:
+      - fans_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fans_user -d fans_db -h localhost"] # Added -h localhost
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  events-service:
+    build:
+      context: .
+      dockerfile: ./events-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://events_user:Admin123@events-db:5432/events_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      events-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"] # <--- CHANGED THIS
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  fans-service:
+    build:
+      context: .
+      dockerfile: ./fans-service/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://fans_user:Admin123@fans-db:5432/fans_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      fans-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3002/health || exit 1"] # <--- CHANGED THIS
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=your-jwt-secret-key
+      - PORT=3000
+      - DB_HOST=fans-db
+      - DB_USER=fans_user
+      - DB_PASSWORD=Admin123
+      - DB_NAME=fans_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      events-service:
+        condition: service_healthy
+      fans-service:
+        condition: service_healthy
+      fans-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  events_data:
+  fans_data:

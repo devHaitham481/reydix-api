@@ -1,0 +1,4 @@
+packages:
+  - 'api-gateway'
+  - 'events-service'
+  - 'fans-service'
