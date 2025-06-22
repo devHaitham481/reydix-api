@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      pg:
+        specifier: ^8.11.3
+        version: 8.16.2
 
   api-gateway:
     dependencies:
