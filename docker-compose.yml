@@ -6,48 +6,66 @@ services:
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
-      timeout: 5s
-      retries: 5
       start_period: 5s
+
+  reydix-db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: reydix_user
+      POSTGRES_PASSWORD: Admin123
+      POSTGRES_DB: reydix_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - reydix_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reydix_user -d reydix_db -h reydix-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
 
   events-db:
     image: postgres:15
+    restart: always
     environment:
-      POSTGRES_DB: events_db
       POSTGRES_USER: events_user
       POSTGRES_PASSWORD: Admin123
+      POSTGRES_DB: events_db
     ports:
       - "5432:5432"
     volumes:
-      - events_data:/var/lib/postgresql/data
+      - events_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U events_user -d events_db -h localhost"] # Added -h localhost for robustness
+      test: ["CMD-SHELL", "pg_isready -U events_user -d events_db -h localhost"]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
 
   fans-db:
     image: postgres:15
+    restart: always
     environment:
-      POSTGRES_DB: fans_db
       POSTGRES_USER: fans_user
       POSTGRES_PASSWORD: Admin123
+      POSTGRES_DB: fans_db
     ports:
       - "5433:5432"
     volumes:
-      - fans_data:/var/lib/postgresql/data
+      - fans_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fans_user -d fans_db -h localhost"] # Added -h localhost
+      test: ["CMD-SHELL", "pg_isready -U fans_user -d fans_db -h localhost"]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
 
   events-service:
     build:
       context: .
-      dockerfile: ./events-service/Dockerfile
+      dockerfile: ./apps/events-service/Dockerfile
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://events_user:Admin123@events-db:5432/events_db
@@ -72,7 +90,7 @@ services:
   fans-service:
     build:
       context: .
-      dockerfile: ./fans-service/Dockerfile
+      dockerfile: ./apps/fans-service/Dockerfile
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://fans_user:Admin123@fans-db:5432/fans_db
@@ -97,17 +115,18 @@ services:
   api-gateway:
     build:
       context: .
-      dockerfile: ./api-gateway/Dockerfile
+      dockerfile: ./apps/api-gateway/Dockerfile
     environment:
       - NODE_ENV=development
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - JWT_SECRET=your-jwt-secret-key
       - PORT=3000
-      - DB_HOST=fans-db
-      - DB_USER=fans_user
+      - DB_HOST=reydix-db
+      - DB_USER=reydix_user
       - DB_PASSWORD=Admin123
-      - DB_NAME=fans_db
+      - DB_NAME=reydix_db
+      - DB_PORT=5432
     ports:
       - "3000:3000"
     depends_on:
@@ -128,5 +147,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  events_data:
-  fans_data:
+  events_db_data:
+  fans_db_data:
+  reydix_db_data:

@@ -5,20 +5,29 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "api-gateway",
-    "events-service",
-    "fans-service"
+    "apps/api-gateway",
+    "apps/events-service",
+    "apps/fans-service"
   ],
   "scripts": {
-    "start:dev": "pnpm --parallel --stream --filter='./*' start:dev",
+    "start:infra": "docker-compose up -d events-db fans-db redis",
+    "stop:infra": "docker-compose down",
+    "start:events:dev": "pnpm --filter events-service start:dev",
+    "start:fans:dev": "pnpm --filter fans-service start:dev",
+    "start:gateway:dev": "pnpm --filter api-gateway start:dev",
+    "start:all:dev": "pnpm start:infra & sleep 15 && pnpm start:events:dev & pnpm start:fans:dev & pnpm start:gateway:dev",
     "db:drop:events": "pnpm --filter events-service typeorm:drop",
     "db:drop:fans": "pnpm --filter fans-service typeorm:drop",
     "lint": "pnpm --parallel --stream --filter='./*' lint",
     "format": "pnpm --parallel --stream --filter='./*' format",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "typeorm:run-migrations:events": "pnpm --filter events-service typeorm:run-migrations",
+    "typeorm:run-migrations:fans": "pnpm --filter fans-service typeorm:run-migrations",
+    "db:seed:events": "pnpm --filter events-service db:seed",
+    "db:seed:fans": "pnpm --filter fans-service db:seed"
   },
   "devDependencies": {
     "pg": "^8.11.3"
   },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "packageManager": "pnpm@10.11.0"
 }
