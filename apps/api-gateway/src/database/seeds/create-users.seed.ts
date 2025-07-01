@@ -15,21 +15,24 @@ export default class CreateUserSeeder implements Seeder {
     console.log('Users table truncated.');
 
     const userRepository = dataSource.getRepository(User);
-    const passwordHash = await bcrypt.hash(faker.internet.password(), 10);
 
-    const user = {
-      name: faker.name.firstName(),
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      passwordHash: passwordHash,
-      createdAt: new Date(),
-    };
+    const users = [];
+    for (let i = 0; i < 10; i++) {
+      const passwordHash = await bcrypt.hash(faker.internet.password(), 10);
+      users.push({
+        name: faker.person.firstName(),
+        username: faker.internet.userName(),
+        email: faker.internet.email(),
+        passwordHash: passwordHash,
+        createdAt: new Date(),
+      });
+    }
 
     try {
-      await userRepository.insert(user);
-      await userRepository.save(user);
+      await userRepository.insert(users);
+      console.log('10 users inserted successfully.');
     } catch (error) {
-      console.error('Error inserting user:', error);
+      console.error('Error inserting users:', error);
     }
   }
 }
