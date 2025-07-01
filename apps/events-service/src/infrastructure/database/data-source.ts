@@ -17,8 +17,8 @@ export function getDataSourceOptions(
     password: configService.get<string>('DB_PASSWORD') || 'Admin123',
     database: configService.get<string>('DB_NAME') || 'events_db',
     entities: [Event, EventArtist, Artist],
-    seeds: ['dist/src/infrastructure/database/seeders/**/*{.ts,.js}'],
-    factories: ['dist/src/infrastructure/database/factories/**/*{.ts,.js}'],
+    seeds: ['dist/infrastructure/database/seeders/**/*{.ts,.js}'],
+    factories: ['dist/infrastructure/database/factories/**/*{.ts,.js}'],
     synchronize: true,
   };
 }
