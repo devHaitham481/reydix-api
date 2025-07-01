@@ -9,7 +9,8 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'your-jwt-secret-key',
+        secret:
+          configService.get<string>('JWT_SECRET') || 'your-jwt-secret-key',
         signOptions: { expiresIn: '1h' },
       }),
       inject: [ConfigService],
@@ -19,3 +20,4 @@ import { JwtStrategy } from './jwt.strategy';
   exports: [PassportModule, JwtModule],
 })
 export class AuthModule {}
+
