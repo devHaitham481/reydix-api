@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsController } from './controllers/events.controller';
 import { EventsService } from './services/event.service';
+import { Event } from 'src/domain/entities/event.entity';
 import { Artist } from 'src/domain/entities/artist.entity';
 import { EventArtist } from 'src/domain/entities/event-artist.entity';
 

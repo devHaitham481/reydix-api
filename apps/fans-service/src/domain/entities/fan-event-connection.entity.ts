@@ -32,6 +32,6 @@ export class FanEventConnection {
   createdAt: Date;
 
   @ManyToOne(() => Fan, (fan) => fan.eventConnections, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'fan_id' })
+  @JoinColumn({ name: 'fanId' })
   fan: Fan;
 }

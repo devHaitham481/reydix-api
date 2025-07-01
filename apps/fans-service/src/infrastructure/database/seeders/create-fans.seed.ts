@@ -26,15 +26,3 @@ export async function seedFans(): Promise<Fan[]> {
 
   return createdFans as Fan[];
 }
-
-if (require.main === module) {
-  seedFans()
-    .then(() => {
-      console.log('Fans seeded successfully');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('Error seeding fans:', error);
-      process.exit(1);
-    });
-}

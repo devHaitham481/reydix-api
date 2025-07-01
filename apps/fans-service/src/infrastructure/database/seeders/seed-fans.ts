@@ -1,7 +1,9 @@
 import { seedFans } from './create-fans.seed';
 import { seedFanEventConnections } from './create-fan-event-connections.seed';
+import { seedFanArtistConnections } from './create-fan-artist-connections.seed';
 import { AppDataSource } from '../data-source';
 import { FanEventConnection } from '../../../domain/entities/fan-event-connection.entity';
+import { FanArtist } from '../../../domain/entities/fan-artist.entity';
 import { Fan } from '../../../domain/entities/fan.entity';
 
 export async function seedFansService(): Promise<void> {
@@ -17,11 +19,13 @@ export async function seedFansService(): Promise<void> {
     console.log('Clearing existing data...');
     const fanEventConnectionRepository =
       AppDataSource.getRepository(FanEventConnection);
+    const fanArtistRepository = AppDataSource.getRepository(FanArtist);
     const fanRepository = AppDataSource.getRepository(Fan);
 
     await fanEventConnectionRepository.query(
       'DELETE FROM "fan_event_connections"',
     );
+    await fanArtistRepository.query('DELETE FROM "fan_artists"');
     await fanRepository.query('DELETE FROM "fans"');
     console.log('✅ Cleared all existing data');
 
@@ -33,6 +37,10 @@ export async function seedFansService(): Promise<void> {
     console.log('Creating fan-event connections...');
     const connections = await seedFanEventConnections();
     console.log(`Created ${connections.length} fan-event connections`);
+
+    console.log('Creating fan-artist connections...');
+    const artistConnections = await seedFanArtistConnections(fans);
+    console.log(`Created ${artistConnections.length} fan-artist connections`);
 
     console.log('Fans Service seeding completed successfully!');
   } catch (error) {
@@ -57,4 +65,3 @@ if (require.main === module) {
       process.exit(1);
     });
 }
-

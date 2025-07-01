@@ -4,6 +4,7 @@ import { DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import { Fan } from '../../domain/entities/fan.entity';
 import { FanEventConnection } from '../../domain/entities/fan-event-connection.entity';
+import { FanArtist } from '../../domain/entities/fan-artist.entity';
 
 export function getDataSourceOptions(
   configService: ConfigService,
@@ -15,7 +16,7 @@ export function getDataSourceOptions(
     username: configService.get<string>('DB_USER') || 'fans_user',
     password: configService.get<string>('DB_PASSWORD') || 'Admin123',
     database: configService.get<string>('DB_NAME') || 'fans_db',
-    entities: [Fan, FanEventConnection],
+    entities: [Fan, FanEventConnection, FanArtist],
     seeds: ['dist/src/infrastructure/database/seeders/**/*{.ts,.js}'],
     factories: ['dist/src/infrastructure/database/factories/**/*{.ts,.js}'],
     synchronize: true,

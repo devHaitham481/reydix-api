@@ -4,10 +4,18 @@ import {
   Param,
   ParseUUIDPipe,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiOperation,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { EventsService } from '../services/event.service';
 import { EventResponseDto } from '../dto/event-reponse.dto';
+import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 
 @ApiTags('Events')
 @Controller('events')
@@ -15,17 +23,25 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get an event by ID with its performing artists' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Get an event by ID with its artists',
+  })
   @ApiParam({
     name: 'id',
-    description: 'The UUID of the event',
+    description: 'UUID of the event',
     type: 'string',
     format: 'uuid',
   })
   @ApiResponse({
     status: 200,
-    description: 'Event found and returned successfully',
+    description: 'Event found successfully',
     type: EventResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT required',
   })
   @ApiResponse({ status: 404, description: 'Event not found' })
   async findOneWithArtists(

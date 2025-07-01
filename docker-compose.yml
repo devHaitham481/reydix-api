@@ -1,4 +1,21 @@
 services:
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-postgresql:9.3
+    depends_on:
+      reydix-db:
+        condition: service_healthy
+    ports:
+      - "3567:3567"
+    environment:
+      POSTGRESQL_CONNECTION_URI: "postgresql://reydix_user:Admin123@reydix-db:5432/reydix_db"
+    restart: unless-stopped
+    healthcheck:
+      test: >
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:7-alpine
     ports:
@@ -72,6 +89,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PORT=3001
+      - JWT_SECRET=your-jwt-secret-key
     ports:
       - "3001:3001"
     depends_on:
@@ -97,6 +115,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PORT=3002
+      - JWT_SECRET=your-jwt-secret-key
     ports:
       - "3002:3002"
     depends_on:
@@ -127,12 +146,20 @@ services:
       - DB_PASSWORD=Admin123
       - DB_NAME=reydix_db
       - DB_PORT=5432
+      - EVENTS_SERVICE_URL=http://events-service:3001
+      - FANS_SERVICE_URL=http://fans-service:3002
+      - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
+      - APP_NAME=Reydix API
+      - API_DOMAIN=http://localhost:3000
+      - WEBSITE_DOMAIN=http://localhost:3000
     ports:
       - "3000:3000"
     depends_on:
       events-service:
         condition: service_healthy
       fans-service:
+        condition: service_healthy
+      supertokens:
         condition: service_healthy
       fans-db:
         condition: service_healthy

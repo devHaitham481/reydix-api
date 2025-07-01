@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { FanEventConnection } from './fan-event-connection.entity'; // Will create this
+import { FanEventConnection } from './fan-event-connection.entity';
+import { FanArtist } from './fan-artist.entity';
 
 @Entity('fans')
 export class Fan {
@@ -19,13 +20,6 @@ export class Fan {
   @Column({ unique: true, length: 255 })
   email: string;
 
-  // Storing preferences directly as array columns, matching DB schema
-  @Column('simple-array', { default: [] })
-  favoriteGenres: string[];
-
-  @Column('simple-array', { default: [] })
-  favoriteArtistIds: string[]; // Stores UUIDs as strings
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -34,4 +28,7 @@ export class Fan {
 
   @OneToMany(() => FanEventConnection, (connection) => connection.fan)
   eventConnections: FanEventConnection[];
+
+  @OneToMany(() => FanArtist, (fanArtist) => fanArtist.fan)
+  fanArtists: FanArtist[];
 }

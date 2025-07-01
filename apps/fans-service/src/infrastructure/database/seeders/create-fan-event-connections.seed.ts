@@ -42,16 +42,3 @@ export async function seedFanEventConnections(): Promise<FanEventConnection[]> {
 
   return createdConnections as FanEventConnection[];
 }
-
-if (require.main === module) {
-  seedFanEventConnections()
-    .then(() => {
-      console.log('Fan-event connections seeded successfully');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('Error seeding fan-event connections:', error);
-      process.exit(1);
-    });
-}
-
