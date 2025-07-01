@@ -10,15 +10,15 @@ import {
 import { Fan } from './fan.entity';
 
 @Entity('fan_event_connections')
-@Unique(['fanId', 'eventId']) // Ensures unique combination of fan and event
+@Unique(['fanId', 'eventId'])
 export class FanEventConnection {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'uuid' })
-  fanId: string; // Foreign key to Fan
+  fanId: string;
 
-  @Column({ type: 'uuid' }) // External reference to Events Service's Event ID
+  @Column({ type: 'uuid' })
   eventId: string;
 
   @Column({
