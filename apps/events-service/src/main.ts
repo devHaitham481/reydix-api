@@ -4,10 +4,9 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  // Create the HTTP server for health checks and potential REST endpoints
-  const httpPort = parseInt(process.env.PORT || '3001', 10); // Or 3002 for fans-service
+  const httpPort = parseInt(process.env.PORT || '3001', 10);
   const httpServer = await NestFactory.create(AppModule);
-  await httpServer.listen(httpPort, '0.0.0.0'); // <--- CRITICAL: Add '0.0.0.0' here
+  await httpServer.listen(httpPort, '0.0.0.0');
   console.log(`HTTP Server running on port ${httpPort}`);
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(

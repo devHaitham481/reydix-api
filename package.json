@@ -20,12 +20,7 @@
     "db:drop:events": "pnpm --filter events-service typeorm:drop",
     "db:drop:fans": "pnpm --filter fans-service typeorm:drop",
     "lint": "pnpm --parallel --stream --filter='./*' lint",
-    "format": "pnpm --parallel --stream --filter='./*' format",
-    "seed": "pnpm --filter api-gateway... seed && pnpm --filter events-service... seed && pnpm --filter fans-service... seed",
-    "typeorm:run-migrations:events": "pnpm --filter events-service typeorm:run-migrations",
-    "typeorm:run-migrations:fans": "pnpm --filter fans-service typeorm:run-migrations",
-    "db:seed:events": "pnpm --filter events-service db:seed",
-    "db:seed:fans": "pnpm --filter fans-service db:seed"
+    "format": "pnpm --parallel --stream --filter='./*' format"
   },
   "devDependencies": {
     "pg": "^8.11.3"

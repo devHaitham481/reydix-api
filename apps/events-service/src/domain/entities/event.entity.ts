@@ -7,9 +7,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { EventArtist } from './event-artist.entity';
-// import { Artist } from './artist.entity'; // Artist is not directly part of Event entity, only via EventArtist
 
-@Entity('events') // Good practice to explicitly name the table
+@Entity('events')
 export class Event {
   @PrimaryGeneratedColumn('uuid')
   id: string;

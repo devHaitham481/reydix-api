@@ -16,12 +16,6 @@ export class Artist {
   @Column({ unique: true })
   name: string;
 
-  @Column('simple-array', { nullable: false }) // Changed to nullable: false to match PRD
-  genres: string[];
-
-  @Column({ type: 'text', nullable: true })
-  biography: string;
-
   @CreateDateColumn()
   createdAt: Date;
 

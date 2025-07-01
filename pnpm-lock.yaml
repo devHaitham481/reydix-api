@@ -126,6 +126,9 @@ importers:
 
   apps/events-service:
     dependencies:
+      '@faker-js/faker':
+        specifier: ^9.8.0
+        version: 9.8.0
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.4.19(reflect-metadata@0.1.14)(rxjs@7.8.2)
@@ -165,6 +168,9 @@ importers:
       typeorm:
         specifier: ^0.3.20
         version: 0.3.25(ioredis@5.6.1)(pg@8.16.2)(reflect-metadata@0.1.14)(ts-node@10.9.2(@types/node@20.19.1)(typescript@5.8.3))
+      typeorm-extension:
+        specifier: ^3.7.1
+        version: 3.7.1(typeorm@0.3.25(ioredis@5.6.1)(pg@8.16.2)(reflect-metadata@0.1.14)(ts-node@10.9.2(@types/node@20.19.1)(typescript@5.8.3)))
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
@@ -232,6 +238,9 @@ importers:
 
   apps/fans-service:
     dependencies:
+      '@faker-js/faker':
+        specifier: ^9.8.0
+        version: 9.8.0
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.4.19(reflect-metadata@0.1.14)(rxjs@7.8.2)
@@ -268,6 +277,9 @@ importers:
       typeorm:
         specifier: ^0.3.20
         version: 0.3.25(ioredis@5.6.1)(pg@8.16.2)(reflect-metadata@0.1.14)(ts-node@10.9.2(@types/node@20.19.1)(typescript@5.8.3))
+      typeorm-extension:
+        specifier: ^3.7.1
+        version: 3.7.1(typeorm@0.3.25(ioredis@5.6.1)(pg@8.16.2)(reflect-metadata@0.1.14)(ts-node@10.9.2(@types/node@20.19.1)(typescript@5.8.3)))
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
