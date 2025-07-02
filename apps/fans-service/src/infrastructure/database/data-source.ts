@@ -9,6 +9,19 @@ import { FanArtist } from '../../domain/entities/fan-artist.entity';
 export function getDataSourceOptions(
   configService: ConfigService,
 ): DataSourceOptions & SeederOptions {
+  const databaseUrl = configService.get<string>('DATABASE_URL');
+  
+  if (databaseUrl) {
+    return {
+      type: 'postgres',
+      url: databaseUrl,
+      entities: [Fan, FanEventConnection, FanArtist],
+      seeds: ['dist/src/infrastructure/database/seeders/**/*{.ts,.js}'],
+      factories: ['dist/src/infrastructure/database/factories/**/*{.ts,.js}'],
+      synchronize: true,
+    };
+  }
+  
   return {
     type: 'postgres',
     host: configService.get<string>('DB_HOST') || 'localhost',

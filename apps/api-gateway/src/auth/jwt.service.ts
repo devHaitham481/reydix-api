@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 export interface JwtPayload {
-  sub: string; // user ID
+  sub: string;
   email: string;
   iat?: number;
   exp?: number;
@@ -34,3 +34,4 @@ export class TokenService {
     });
   }
 }
+

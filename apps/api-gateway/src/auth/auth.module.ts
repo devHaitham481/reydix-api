@@ -13,6 +13,15 @@ import { TokenService } from './jwt.service';
 import { configureSupertokens } from './supertokens.config';
 
 @Module({
+  imports: [
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   providers: [TokenService],
   exports: [TokenService],
   controllers: [AuthController],
@@ -37,6 +46,7 @@ export class AuthModule implements NestModule {
         TokenService,
       ],
       exports: [TokenService],
+      controllers: [AuthController],
       imports: [
         JwtModule.registerAsync({
           useFactory: (configService: ConfigService) => ({
@@ -50,4 +60,3 @@ export class AuthModule implements NestModule {
     };
   }
 }
-

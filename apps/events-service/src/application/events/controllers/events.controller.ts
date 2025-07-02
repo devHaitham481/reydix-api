@@ -4,27 +4,42 @@ import {
   Param,
   ParseUUIDPipe,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { EventsService } from '../services/event.service';
 import { EventResponseDto } from '../dto/event-reponse.dto';
-import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 
 @ApiTags('Events')
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
+  @Get()
+  @ApiOperation({
+    description: 'Get all events (for seeding purposes)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All events retrieved successfully',
+    type: [EventResponseDto],
+  })
+  async findAll(): Promise<EventResponseDto[]> {
+    return this.eventsService.findAll();
+  }
+
+  @Get('artists')
+  @ApiOperation({
+    description: 'Get all artists (for seeding purposes)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All artists retrieved successfully',
+  })
+  async findAllArtists() {
+    return this.eventsService.findAllArtists();
+  }
+
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({
     description: 'Get an event by ID with its artists',
   })
@@ -38,10 +53,6 @@ export class EventsController {
     status: 200,
     description: 'Event found successfully',
     type: EventResponseDto,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT required',
   })
   @ApiResponse({ status: 404, description: 'Event not found' })
   async findOneWithArtists(

@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { FansModule } from './application/fans/fans.module';
-import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
@@ -17,7 +16,6 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
       isGlobal: true,
     }),
     DatabaseModule,
-    AuthModule,
     FansModule,
   ],
   controllers: [AppController],

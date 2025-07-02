@@ -9,6 +9,19 @@ import { Artist } from '../../domain/entities/artist.entity';
 export function getDataSourceOptions(
   configService: ConfigService,
 ): DataSourceOptions & SeederOptions {
+  const databaseUrl = configService.get<string>('DATABASE_URL');
+
+  if (databaseUrl) {
+    return {
+      type: 'postgres',
+      url: databaseUrl,
+      entities: [Event, EventArtist, Artist],
+      seeds: ['dist/infrastructure/database/seeders/**/*{.ts,.js}'],
+      factories: ['dist/infrastructure/database/factories/**/*{.ts,.js}'],
+      synchronize: true,
+    };
+  }
+
   return {
     type: 'postgres',
     host: configService.get<string>('DB_HOST') || 'localhost',

@@ -1,22 +1,13 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Query,
-  ParseUUIDPipe,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
 import {
   ApiTags,
   ApiResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FansService } from '../services/fans.service';
 import { RelevantFansResponseDto } from '../dto/relevant-fans-response.dto';
-import { JwtAuthGuard } from '../../../auth/jwt-auth.guard';
 
 @ApiTags('Fans')
 @Controller('fans')
@@ -24,8 +15,6 @@ export class FansController {
   constructor(private readonly fansService: FansService) {}
 
   @Get('relevant-for-event/:eventId')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({
     description:
       'Returns fans who are connected to the event through the artist',
@@ -47,10 +36,6 @@ export class FansController {
     status: 200,
     description: 'Relevant fans found and returned successfully',
     type: RelevantFansResponseDto,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - valid JWT token required',
   })
   async findRelevantFansForEvent(
     @Param('eventId', ParseUUIDPipe) eventId: string,

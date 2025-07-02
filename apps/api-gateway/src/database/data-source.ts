@@ -14,7 +14,7 @@ export function getDataSourceOptions(
     username: configService.get<string>('DB_USER') || 'reydix_user',
     password: configService.get<string>('DB_PASSWORD') || 'Admin123',
     database: configService.get<string>('DB_NAME') || 'reydix_db',
-    entities: [User], // <-- Explicitly list your entities here
+    entities: [User],
     seeds: ['dist/src/database/seeds/**/*{.ts,.js}'],
     factories: ['dist/database/factories/**/*{.ts,.js}'],
     synchronize: true,

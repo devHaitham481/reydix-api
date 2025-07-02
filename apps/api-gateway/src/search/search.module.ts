@@ -10,7 +10,7 @@ import { AuthModule } from '../auth/auth.module';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    AuthModule.forRoot(),
+    AuthModule,
   ],
   controllers: [SearchController],
   providers: [SearchService],
