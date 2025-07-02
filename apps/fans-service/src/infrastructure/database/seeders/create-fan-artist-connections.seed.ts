@@ -20,23 +20,27 @@ export async function seedFanArtistConnections(
     return [];
   }
 
-  // Real artist IDs from events service
-  const artistIds = [
-    '581e5cd9-6530-47ec-93b7-f9b2352fb385', // Theresa Medhurst
-    '78c75935-4945-4eaa-9680-6e57eb04e3e7', // Olivia Connelly
-    'b803050b-82ca-47bf-af3c-60161dce374d', // Pearl Hauck
-    '580065ac-7532-4b17-aca8-28ea5afeb562', // Rex Stark Sr.
-    '58cb11c8-10d9-4355-8c11-2e5fedc20a4f', // Dr. Armando Barrows
-    'ee8f2eed-4149-4836-9eec-858c8db82342', // Gregory Roberts
-    '18d1761a-a5c6-46e7-a926-5598dc4aa414', // Darnell Bartoletti
-    'a14a7b09-3d5b-419b-92e2-82b8b4f29aa8', // Edward Hudson
-    'a82b5cd0-690c-4571-9415-2a4fe4ac2170', // Erica Schoen DVM
-    'ff900581-5a31-4dc7-8209-ceb98e87d364', // Timmy Daugherty
-  ];
+  let artistIds: string[] = [];
+
+  try {
+    const response = await fetch('http://localhost:3001/events/artists');
+    if (response.ok) {
+      const artists = await response.json();
+      artistIds = artists.map((artist: any) => artist.id);
+      console.log(`Fetched ${artistIds.length} artist IDs from events service`);
+    } else {
+      throw new Error('Failed to fetch artists');
+    }
+  } catch (error) {
+    console.log(
+      'Failed to fetch from events service, generating fake ones for development',
+    );
+    artistIds = Array.from({ length: 10 }, () => faker.string.uuid());
+  }
 
   const fanArtistConnections: Partial<FanArtist>[] = [];
 
-  // For each fan, randomly assign them to follow 1-4 artists
+  // assign artists to each fan
   for (const fan of fans) {
     const numberOfArtistsToFollow = faker.number.int({ min: 1, max: 4 });
     const shuffledArtists = faker.helpers.shuffle(artistIds);
