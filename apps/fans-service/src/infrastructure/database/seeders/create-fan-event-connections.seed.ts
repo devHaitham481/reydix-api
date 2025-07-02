@@ -39,8 +39,6 @@ export async function seedFanEventConnections(): Promise<FanEventConnection[]> {
   // Clear existing connections first
   await fanEventConnectionRepository.clear();
 
-  const connections: Partial<FanEventConnection>[] = [];
-
   // Create 20 connections
   for (let i = 0; i < 20; i++) {
     const randomFan = faker.helpers.arrayElement(fans);
@@ -51,16 +49,15 @@ export async function seedFanEventConnections(): Promise<FanEventConnection[]> {
       'attended',
     ]);
 
-    connections.push({
-      fanId: randomFan.id,
-      eventId: randomEventId,
-      connectionType: connectionType,
-    });
+    try {
+      await fanEventConnectionRepository.save({
+        fanId: randomFan.id,
+        eventId: randomEventId,
+        connectionType: connectionType,
+      });
+    } catch (error) {}
   }
 
-  const createdConnections =
-    await fanEventConnectionRepository.save(connections);
-  console.log(`Created ${createdConnections.length} fan-event connections`);
-
-  return createdConnections as FanEventConnection[];
+  const allConnections = await fanEventConnectionRepository.find();
+  return allConnections;
 }
