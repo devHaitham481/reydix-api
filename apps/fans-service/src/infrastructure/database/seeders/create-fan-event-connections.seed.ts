@@ -25,18 +25,21 @@ export async function seedFanEventConnections(): Promise<FanEventConnection[]> {
     if (response.ok) {
       const events = await response.json();
       eventIds = events.map((event: any) => event.id);
-      console.log(`Fetched ${eventIds.length} event IDs from events service`);
+      console.log(
+        `Fetched ${eventIds.length} real event IDs from events service`,
+      );
     } else {
-      throw new Error('Failed to fetch events');
+      throw new Error(
+        `Error seeding fan event connections: ${response.status} ${response.statusText}`,
+      );
     }
   } catch (error) {
-    console.log(
-      'Failed to fetch from API, generating fake ones for development',
+    throw new Error(
+      'Events service must be running to seed fan-event connections',
     );
-    eventIds = Array.from({ length: 10 }, () => faker.string.uuid());
   }
 
-  // Clear existing connections first
+  // clear first
   await fanEventConnectionRepository.clear();
 
   // Create 20 connections

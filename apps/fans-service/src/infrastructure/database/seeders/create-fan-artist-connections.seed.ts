@@ -27,15 +27,16 @@ export async function seedFanArtistConnections(
     if (response.ok) {
       const artists = await response.json();
       artistIds = artists.map((artist: any) => artist.id);
-      console.log(`Fetched ${artistIds.length} artist IDs from events service`);
+      console.log(`Fetched real artist IDs from events service`);
     } else {
-      throw new Error('Failed to fetch artists');
+      throw new Error(
+        `Error seeding fan-artist connections: ${response.status} ${response.statusText}`,
+      );
     }
   } catch (error) {
-    console.log(
-      'Failed to fetch from events service, generating fake ones for development',
+    throw new Error(
+      'Events service must be running to seed fan-artist connections',
     );
-    artistIds = Array.from({ length: 10 }, () => faker.string.uuid());
   }
 
   const fanArtistConnections: Partial<FanArtist>[] = [];
